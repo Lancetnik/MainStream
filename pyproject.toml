@@ -1,6 +1,7 @@
 [project]
 name = "main-stream"
-description = ""
+description = "MainStream - best HTTP framework ever"
+readme = "README.md"
 
 authors = [
     { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.ru" },
