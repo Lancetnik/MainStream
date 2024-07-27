@@ -1,0 +1,16 @@
+[project]
+name = "mainstream"
+description = ""
+
+authors = [
+    { name = "Nikita Pastukhov", email = "nikita@pastukhov-dev.ru" },
+]
+
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+
+version = "0.1.0"
+
+dependencies = []
