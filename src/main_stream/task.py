@@ -11,10 +11,6 @@ from .statuses import TaskStatus
 if typing.TYPE_CHECKING:
     from .broker import TaskBroker
 
-AnyFunc: typing.TypeAlias = typing.Callable[..., typing.Any]
-TaskDecorator: typing.TypeAlias = typing.Callable[[AnyFunc], "Task"]
-
-
 class TaskResult:
     def __init__(
         self,
@@ -60,7 +56,7 @@ class TaskResult:
             data = (await asyncio.wait_for(self.__result_future, timeout=timeout)).data
         finally:
             await self.__sub.drain()
-            await self.__kv.purge(self.task_id)
+            await self.__kv.delete(self.task_id)
         return data
 
     async def cancel(self) -> None:

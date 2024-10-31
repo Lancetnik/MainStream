@@ -8,9 +8,9 @@ from faststream._internal.utils.functions import to_async
 
 from .statuses import TaskStatus
 from .task import Task
+from .types import AnyFunc
 from .exceptions import TaskCanceledError
 
-AnyFunc: typing.TypeAlias = typing.Callable[..., typing.Any]
 TaskDecorator: typing.TypeAlias = typing.Callable[[AnyFunc], Task]
 
 
@@ -57,10 +57,10 @@ class TaskBroker(NatsBroker):
         def decorator(func: AnyFunc) -> Task:
             nonlocal name
             if name is None:
-                destination_name = (
-                    f"{self.subject_prefix}.{func.__name__}-{str(hash(func))[:8]}"
-                )
                 name = f"{func.__name__}-{str(hash(func))[:8]}"
+                destination_name = (
+                    f"{self.subject_prefix}.{name}"
+                )
             else:
                 destination_name = name
 
@@ -111,7 +111,7 @@ class TaskBroker(NatsBroker):
 
             task_status = TaskStatus((await kv.get(task_id)).value or b"")
             if task_status is TaskStatus.Cancelled:
-                await kv.purge(task_id)
+                await kv.delete(task_id)
                 await watcher.stop()
                 raise TaskCanceledError
 
@@ -139,7 +139,7 @@ class TaskBroker(NatsBroker):
 
             else:
                 if data is TaskStatus.Cancelled:
-                    await kv.purge(task_id)
+                    await kv.delete(task_id)
                     raise TaskCanceledError
 
                 else:
